@@ -1,0 +1,23 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: locust-exporter
+  name: locust-exporter-service
+  namespace: mft-qaloadtesting
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 11001
+    name: metrics
+  selector:
+    run: locust-exporter
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

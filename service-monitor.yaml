@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    svc: locust-exporter
+  name: locust-exporter-service
+  namespace: mft-qaloadtesting
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 11001
+    name: metrics
+  selector:
+    run: locust-exporter
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: locust-exporter-service-monitor
+    labels:
+      run: locust-exporter
+      release: prom-op
+    namespace: mft-qaloadtesting
+spec:
+    selector:
+      matchLabels:
+        svc: locust-exporter
+    namespaceSelector:
+      matchNames:
+      - mft-qaloadtesting
+    endpoints:
+    - port: metrics
+      path: /
+      interval: 10s
+      honorLabels: true
